@@ -1,10 +1,14 @@
 import { auth } from "../firebase/firebaseconfig.js";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } 
-  from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 // -------------------- LOGIN --------------------
 const loginForm = document.getElementById("login-form");
-if (loginForm) { // ✅ Solo corre si existe el formulario
+if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -13,7 +17,7 @@ if (loginForm) { // ✅ Solo corre si existe el formulario
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      alert("Bienvenido: " + userCredential.user.email);
+      alert("Bienvenido: " + (userCredential.user.displayName || userCredential.user.email));
       window.location.href = "../inicio.html";
     } catch (error) {
       alert("Error al iniciar sesión: " + error.message);
@@ -21,14 +25,31 @@ if (loginForm) { // ✅ Solo corre si existe el formulario
   });
 }
 
+// -------------------- OLVIDÉ MI CONTRASEÑA --------------------
+const forgotPasswordLink = document.querySelector(".forgot-password");
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
 
+    if (!email) {
+      alert("Por favor escribe tu correo en el campo de email.");
+      return;
+    }
 
-
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("📩 Te enviamos un enlace a tu correo para restablecer tu contraseña.");
+    } catch (error) {
+      alert("Error al enviar el correo de recuperación: " + error.message);
+    }
+  });
+}
 
 // -------------------- LOGOUT --------------------
 document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) { // ✅ Solo corre si existe el botón
+  if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       try {
         await signOut(auth);
@@ -44,6 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------- PROTECCIÓN DE RUTAS --------------------
 onAuthStateChanged(auth, (user) => {
   if (!user && window.location.pathname.includes("inicio.html")) {
-    window.location.href = "../index.html"; // redirige si no hay usuario
+    window.location.href = "../index.html"; 
+  }
+});
+
+// -------------------- MOSTRAR NOMBRE DEL USUARIO --------------------
+onAuthStateChanged(auth, (user) => {
+  const userNameSpan = document.getElementById("userName");
+  if (user && userNameSpan) {
+    userNameSpan.textContent = user.displayName || user.email;
   }
 });

@@ -4,12 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Inicio - Gestor de Categorías</title>
-    <link rel="stylesheet" href="style/inicio.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet">
+    <title>Gestor de Objetos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style/inicio.css">
     <link rel="icon" href="assets/QR.ico" type="image/x-icon">
 </head>
 
@@ -22,80 +19,94 @@
     <main class="main">
         <div class="actions">
             <button id="btnCrearCategoria" class="btn-crear"><i class="fas fa-plus"></i> Crear categoría</button>
-            <button id="btnCrearProducto" class="btn-crear"><i class="fas fa-plus"></i> Crear producto</button>
+            <button id="btnCrearObjeto" class="btn-crear"><i class="fas fa-plus"></i> Crear Objeto</button>
         </div>
 
-        <!-- Modal para crear categoría -->
-        <div id="modalCategoria" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Crear Nueva Categoría</h2>
-                <form id="formCategoria">
-                    <div class="input-group">
-                        <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required>
-                    </div>
-                    <div id="camposCategoria">
-                        <!-- Campos adicionales para categoría se agregarán aquí -->
-                    </div>
-                    <button type="button" id="agregarCampoCategoria" class="btn-agregar-campo">
-                        <i class="fas fa-plus"></i> Agregar campo
-                    </button>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn-guardar">Guardar Categoría</button>
-                        <button type="button" class="btn-cancelar">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal para crear producto -->
-        <div id="modalProducto" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Crear Nuevo Producto</h2>
-                <form id="formProducto">
-                    <div class="input-group">
-                        <label for="categoriaProducto">Categoría:</label>
-                        <select id="categoriaProducto" required>
-                            <option value="">Seleccione una categoría</option>
-                            <!-- Las categorías se cargarán dinámicamente -->
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="nombreProducto" placeholder="Nombre del producto" required>
-                    </div>
-                    <div id="camposProducto">
-                        <!-- Campos adicionales para producto se agregarán aquí -->
-                    </div>
-                    <button type="button" id="agregarCampoProducto" class="btn-agregar-campo">
-                        <i class="fas fa-plus"></i> Agregar campo
-                    </button>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn-guardar">Guardar Producto</button>
-                        <button type="button" class="btn-cancelar">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
+        <!-- 🔎 Búsqueda Categorías -->
         <section class="lista">
-            <h2>Mis Categorías</h2>
-            <div id="listaCategorias" class="cards">
-                <!-- Aquí se insertan dinámicamente las categorías -->
+            <h2>Categorías</h2>
+            <div class="search-container">
+                <input type="text" id="buscarCategoria" placeholder="Buscar categoría...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
             </div>
+            <div id="listaCategorias" class="cards"></div>
         </section>
 
+        <!-- 🔎 Búsqueda Objetos -->
         <section class="lista">
-            <h2>Mis Productos</h2>
-            <div id="listaProductos" class="cards">
-                <!-- Aquí se insertan dinámicamente los productos -->
+            <h2>Objetos</h2>
+            <div class="filtros">
+                <input type="text" id="buscarNombre" placeholder="Buscar por nombre">
+                <input type="text" id="buscarLugar" placeholder="Buscar por lugar">
+                <input type="text" id="buscarZona" placeholder="Buscar por zona">
+                <select id="filtrarCategoria">
+                    <option value="">Todas las categorías</option>
+                </select>
             </div>
+            <div id="listaProductos" class="cards"></div>
         </section>
     </main>
 
-    <script src="funciones/categorias.js"></script>
+    <!-- Modal Categoría -->
+    <div id="modalCategoria" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Crear Nueva Categoría</h2>
+            <form id="formCategoria">
+                <div class="input-group">
+                    <input type="text" id="nombreCategoria" placeholder="Nombre de la categoría" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn-guardar">Guardar</button>
+                    <button type="button" class="btn-cancelar">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Objeto -->
+    <div id="modalProducto" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Crear Nuevo Objeto</h2>
+            <form id="formProducto">
+                <div class="input-group">
+                    <label for="categoriaProducto">Categoría:</label>
+                    <select id="categoriaProducto" required></select>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="nombreProducto" placeholder="Nombre del objeto" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="codigoProducto" placeholder="Código" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="lugarProducto" placeholder="Lugar" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="zonaProducto" placeholder="Zona" required>
+                </div>
+                <div class="input-group">
+                    <label for="fotoProducto">Foto del objeto:</label>
+                    <input type="file" id="fotoProducto" accept="image/*" capture="environment">
+                </div>
+
+                <h3 class="campo_personalizado">Campos adicionales</h3>
+                <div id="camposProducto"></div>
+                <button type="button" id="agregarCampoProducto" class="btn-agregar-campo">
+                    <i class="fas fa-plus"></i> Agregar campo
+                </button>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn-guardar">Guardar Objeto</button>
+                    <button type="button" class="btn-cancelar">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="js/formulariosAdd.js"></script>
+    <script type="module" src="js/Animacion.js"></script>
     <script type="module" src="funciones/login.js"></script>
-    <script type="module" src="funciones/crud.js"></script>
 </body>
 
 </html>
