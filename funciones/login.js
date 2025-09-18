@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // -------------------- PROTECCIÓN DE RUTAS --------------------
 onAuthStateChanged(auth, (user) => {
-  if (!user && window.location.pathname.includes("inicio.html")) {
+  if (!user && window.location.pathname.includes("../inicio.html")) {
     window.location.href = "../index.html"; 
   }
 });
