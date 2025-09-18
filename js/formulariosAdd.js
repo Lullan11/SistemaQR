@@ -79,7 +79,7 @@
           </div>
       `;
 
-      // Agregar al inicio de la lista
+      // Agregar al dashboard de la lista
       const lista = document.getElementById("listaCategorias");
       lista.insertBefore(card, lista.firstChild);
 
@@ -152,7 +152,7 @@
         }
       });
 
-      // Guardar en array (al inicio para que aparezca primero)
+      // Guardar en array (al dashboard para que aparezca primero)
       productos.unshift(producto);
 
       // Crear tarjeta
@@ -188,7 +188,7 @@
         agregarAccionesTarjeta(card, producto);
       }
 
-      // Agregar al inicio de la lista
+      // Agregar al dashboard de la lista
       const lista = document.getElementById("listaProductos");
       lista.insertBefore(card, lista.firstChild);
 
