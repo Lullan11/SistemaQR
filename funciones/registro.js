@@ -22,6 +22,21 @@ registerForm.addEventListener("submit", async (e) => {
     alert("Usuario registrado: " + nombre);
     registerForm.reset();
   } catch (error) {
-    alert("Error en registro: " + error.message);
+    // 🎯 Mapeamos errores de Firebase
+    let mensaje = "Error en registro.";
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        mensaje = "❌ El correo ya está registrado.";
+        break;
+      case "auth/weak-password":
+        mensaje = "⚠️ La contraseña es muy débil (mínimo 6 caracteres).";
+        break;
+      case "auth/invalid-email":
+        mensaje = "❌ El correo no es válido.";
+        break;
+      default:
+        mensaje = "⚠️ " + error.message;
+    }
+    alert(mensaje);
   }
 });

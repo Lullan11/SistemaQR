@@ -20,7 +20,26 @@ if (loginForm) {
       alert("Bienvenido: " + (userCredential.user.displayName || userCredential.user.email));
       window.location.href = "../inicio.html";
     } catch (error) {
-      alert("Error al iniciar sesión: " + error.message);
+      // 🎯 Mapeamos TODOS los errores de Firebase a mensajes claros
+      let mensaje = "Error al iniciar sesión.";
+      switch (error.code) {
+        case "auth/user-not-found":
+          mensaje = "❌ El usuario no existe. Verifica tu correo.";
+          break;
+        case "auth/wrong-password":
+        case "auth/invalid-credential": // ⚠️ Este es el que te estaba saliendo
+          mensaje = "❌ La contraseña o el correo son incorrectos.";
+          break;
+        case "auth/invalid-email":
+          mensaje = "❌ El correo no es válido.";
+          break;
+        case "auth/too-many-requests":
+          mensaje = "⚠️ Demasiados intentos. Intenta más tarde.";
+          break;
+        default:
+          mensaje = "⚠️ Ha ocurrido un error inesperado. Intenta de nuevo.";
+      }
+      alert(mensaje);
     }
   });
 }
@@ -41,7 +60,18 @@ if (forgotPasswordLink) {
       await sendPasswordResetEmail(auth, email);
       alert("📩 Te enviamos un enlace a tu correo para restablecer tu contraseña.");
     } catch (error) {
-      alert("Error al enviar el correo de recuperación: " + error.message);
+      let mensaje = "No pudimos enviar el correo.";
+      switch (error.code) {
+        case "auth/user-not-found":
+          mensaje = "❌ No existe ninguna cuenta con ese correo.";
+          break;
+        case "auth/invalid-email":
+          mensaje = "❌ El correo no es válido.";
+          break;
+        default:
+          mensaje = "⚠️ Ha ocurrido un error inesperado. Intenta de nuevo.";
+      }
+      alert(mensaje);
     }
   });
 }
@@ -56,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Sesión cerrada ✅");
         window.location.href = "../index.html";
       } catch (error) {
-        alert("Error al cerrar sesión: " + error.message);
+        alert("⚠️ No pudimos cerrar la sesión. Intenta de nuevo.");
       }
     });
   }
