@@ -18,7 +18,7 @@ if (loginForm) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       alert("Bienvenido: " + (userCredential.user.displayName || userCredential.user.email));
-      window.location.href = "../dashboard.html";
+      window.location.href = "../SistemaQR/dashboard.html";
     } catch (error) {
       // 🎯 Mapeamos TODOS los errores de Firebase a mensajes claros
       let mensaje = "Error al iniciar sesión.";
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         await signOut(auth);
         alert("Sesión cerrada ✅");
-        window.location.href = "../index.html";
+        window.location.href = "../SistemaQR/index.html";
       } catch (error) {
         alert("⚠️ No pudimos cerrar la sesión. Intenta de nuevo.");
       }
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------- PROTECCIÓN DE RUTAS --------------------
 onAuthStateChanged(auth, (user) => {
   if (!user && window.location.pathname.includes("dashboard.html")) {
-    window.location.href = "../index.html"; 
+    window.location.href = "../SistemaQR/index.html"; 
   }
 });
 
