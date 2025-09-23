@@ -1,5 +1,5 @@
    
-   import { crearCategoria, obtenerCategorias } from "./categorias.js";
+   import { crearCategoria, obtenerCategorias } from "categorias.js";
    
    // === Obtener elementos ===
     const modalCategoria = document.getElementById("modalCategoria");
