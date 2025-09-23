@@ -1,4 +1,7 @@
-    // === Obtener elementos ===
+   
+   import { crearCategoria, obtenerCategorias } from "./categorias.js";
+   
+   // === Obtener elementos ===
     const modalCategoria = document.getElementById("modalCategoria");
     const modalProducto = document.getElementById("modalProducto");
     const modalQR = document.getElementById("modalQR");
@@ -62,37 +65,53 @@
     }
 
     /* ========= CATEGORÍAS ========= */
-    document.getElementById("formCategoria").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const nombreCategoria = document.getElementById("nombreCategoria").value.trim();
-      if (!nombreCategoria) return;
 
-      categorias.push(nombreCategoria);
+document.getElementById("formCategoria").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const nombreCategoria = document.getElementById("nombreCategoria").value.trim();
+  if (!nombreCategoria) return;
 
-      const card = document.createElement("div");
-      card.classList.add("card");
-      card.innerHTML = `
-          <h3>${nombreCategoria}</h3>
-          <div class="card-actions">
-              <button class="editar"><i class="fas fa-edit"></i></button>
-              <button class="eliminar"><i class="fas fa-trash"></i></button>
-          </div>
-      `;
+  try {
+    // 🔥 Guardar en Firestore
+    await crearCategoria(nombreCategoria);
 
-      // Agregar al dashboard de la lista
-      const lista = document.getElementById("listaCategorias");
-      lista.insertBefore(card, lista.firstChild);
+    // Agregar al array local
+    categorias.push(nombreCategoria);
 
-      // Agregar al select de productos
-      const option = document.createElement("option");
-      option.value = nombreCategoria;
-      option.textContent = nombreCategoria;
-      document.getElementById("categoriaProducto").appendChild(option);
-      document.getElementById("filtrarCategoria").appendChild(option.cloneNode(true));
+    // Crear card en el dashboard
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `
+        <h3>${nombreCategoria}</h3>
+        <div class="card-actions">
+            <button class="editar"><i class="fas fa-edit"></i></button>
+            <button class="eliminar"><i class="fas fa-trash"></i></button>
+        </div>
+    `;
 
-      modalCategoria.style.display = "none";
-      e.target.reset();
-    });
+    const lista = document.getElementById("listaCategorias");
+    lista.insertBefore(card, lista.firstChild);
+
+    // Agregar al select de productos
+    const option = document.createElement("option");
+    option.value = nombreCategoria;
+    option.textContent = nombreCategoria;
+    document.getElementById("categoriaProducto").appendChild(option);
+    document.getElementById("filtrarCategoria").appendChild(option.cloneNode(true));
+
+    modalCategoria.style.display = "none";
+    e.target.reset();
+
+    console.log("✅ Categoría guardada en Firestore y en la interfaz");
+  } catch (error) {
+    console.error("❌ Error guardando categoría:", error);
+    alert("Error al guardar la categoría en Firestore");
+  }
+});
+
+
+
+
 
     /* ========= OBJETOS ========= */
     document.getElementById("agregarCampoProducto").addEventListener("click", () => {
