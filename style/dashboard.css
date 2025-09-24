@@ -15,7 +15,7 @@ body {
 .header {
   width: 100%;
   padding: 20px 40px;
-  background: #0b9c23;
+  background: #0a721c;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -305,21 +305,58 @@ body {
   border-color: #0b9c23;
 }
 
+/* ====== CAMPOS ADICIONALES ====== */
 .campo-adicional {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 12px;
   background: #f9f9f9;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #000000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out;
 }
 
-.campo-adicional .input-group {
-  flex: 1;
-  margin-bottom: 0;
+.campo-adicional:hover {
+  background: #f1f1f1;
+  transform: scale(1.01);
 }
+
+/* Inputs dentro de cada campo */
+.campo-adicional input[type="text"] {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.campo-adicional input[type="text"]:focus {
+  border-color: #0b9c23; /* tu color principal */
+  box-shadow: 0 0 4px rgba(15,191,191,0.4);
+}
+
+/* Botón eliminar campo */
+.campo-adicional .btn-eliminar-campo {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.campo-adicional .btn-eliminar-campo:hover {
+  background: #e60000;
+}
+
 
 .btn-eliminar-campo {
   background: #ff4757;

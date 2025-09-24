@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style/dashboard.css">
     <link rel="icon" href="assets/QR.ico" type="image/x-icon">
-    <!-- <base href="/SistemaQR/"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
 <body>
@@ -19,8 +19,8 @@
 
     <main class="main">
         <div class="actions">
-            <button id="btnCrearCategoria" class="btn-crear"><i class="fas fa-plus"></i> Crear categoría</button>
-            <button id="btnCrearObjeto" class="btn-crear"><i class="fas fa-plus"></i> Crear Objeto</button>
+            <button id="btnCrearCategoria" class="btn-crear"><i class="fas fa-plus"></i> Crear categoría </button>
+            <button id="btnCrearObjeto" class="btn-crear"><i class="fas fa-plus"></i> Crear Objeto </button>
         </div>
 
         <!-- 🔎 Búsqueda Categorías -->
@@ -105,9 +105,20 @@
             </form>
         </div>
     </div>
-    <script type="module" src="funciones/formulariosAdd.js"></script>
-    <script type="module" src="js/Animacion.js"></script>
+
+    <!-- Modal QR -->
+    <div id="modalQR" class="modal" style="display:none;">
+        <div class="modal-content" style="text-align:center;">
+            <span class="close">&times;</span>
+            <h2>QR del Objeto</h2>
+            <div id="qrContainer"></div>
+            <div id="infoQR"></div>
+            <button id="descargarQR" class="btn-guardar">Descargar QR</button>
+        </div>
+    </div>
+
+    <script type="module" src="funciones/productosForm.js"></script>    
+    <script type="module" src="funciones/categoriasForm.js"></script>
     <script type="module" src="funciones/login.js"></script>
 </body>
-
 </html>

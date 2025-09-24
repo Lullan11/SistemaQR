@@ -1,0 +1,73 @@
+    /* Contenedor principal centrado */
+    .main-objeto {
+        display: flex;
+        justify-content: center;
+        padding: 50px 20px;
+    }
+
+    /* Tarjeta */
+    .card-objeto {
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 12px;
+        padding: 25px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .card-objeto:hover {
+        transform: translateY(-5px);
+        border-color: #0b9c23;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-objeto h1 {
+        font-size: 1.8rem;
+        color: #0b9c23;
+        margin-bottom: 15px;
+    }
+
+    .card-objeto img {
+        width: 100%;
+        max-width: 250px;
+        border-radius: 8px;
+        border: 2px solid #0b9c23;
+        margin: 10px 0 20px;
+    }
+
+    .card-objeto p {
+        font-size: 14px;
+        color: #000;
+        margin: 5px 0;
+    }
+
+    #camposExtra p {
+        font-size: 13px;
+        color: #333;
+        margin: 3px 0;
+    }
+
+    /* Para campos personalizados dentro de la tarjeta */
+    .campo_personalizado {
+        border-left: 4px solid #0b9c23;
+        padding-left: 10px;
+        margin: 10px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .card-objeto {
+            padding: 20px;
+        }
+
+        .card-objeto h1 {
+            font-size: 1.5rem;
+        }
+
+        .card-objeto img {
+            max-width: 200px;
+        }
+    }
