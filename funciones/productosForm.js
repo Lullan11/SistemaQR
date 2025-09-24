@@ -233,20 +233,31 @@ function generarQR(obj) {
 
     btnDescargarQR.onclick = () => {
         const canvas = qrContainer.querySelector("canvas");
-        const imgData = canvas.toDataURL("image/png");
+        const tempCanvas = document.createElement("canvas");
+        const size = canvas.width;
+        tempCanvas.width = size;
+        tempCanvas.height = size;
+        const ctx = tempCanvas.getContext("2d");
 
+        // 1️⃣ Pintar fondo blanco
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, size, size);
+
+        // 2️⃣ Dibujar el QR encima
+        ctx.drawImage(canvas, 0, 0, size, size);
+
+        // 3️⃣ Convertir a imagen
+        const imgData = tempCanvas.toDataURL("image/png");
+
+        // 4️⃣ Crear PDF con jsPDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Agregar imagen en PDF
         doc.addImage(imgData, 'PNG', 20, 20, 170, 170); // ajustar tamaño
-
-        // Descargar PDF
         doc.save(`${obj.nombre}_QR.pdf`);
     };
-
-
 }
+
 
 
 // ===== INICIALIZAR =====
