@@ -1,73 +1,116 @@
-    /* Contenedor principal centrado */
-    .main-objeto {
-        display: flex;
-        justify-content: center;
-        padding: 50px 20px;
-    }
+/* Reset y fuentes */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
 
-    /* Tarjeta */
-    .card-objeto {
-        background: #fff;
-        border: 2px solid #000;
-        border-radius: 12px;
-        padding: 25px;
-        max-width: 400px;
-        width: 100%;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-        text-align: center;
-        transition: transform 0.3s, border-color 0.3s;
-    }
+body {
+  background-color: #f5f5f5;
+  color: #000;
+  min-height: 100vh;
+}
 
-    .card-objeto:hover {
-        transform: translateY(-5px);
-        border-color: #0b9c23;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    }
+/* Contenedor principal centrado */
+.main-objeto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
+}
 
-    .card-objeto h1 {
-        font-size: 1.8rem;
-        color: #0b9c23;
-        margin-bottom: 15px;
-    }
+/* Tarjeta estilo dashboard */
+.card-objeto {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  border: 2px solid #000;
+}
 
-    .card-objeto img {
-        width: 100%;
-        max-width: 250px;
-        border-radius: 8px;
-        border: 2px solid #0b9c23;
-        margin: 10px 0 20px;
-    }
+.card-objeto:hover {
+  transform: translateY(-5px);
+  border-color: #0b9c23;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
 
-    .card-objeto p {
-        font-size: 14px;
-        color: #000;
-        margin: 5px 0;
-    }
+.card-objeto h1 {
+  font-size: 1.8rem;
+  color: #0b9c23;
+  margin-bottom: 15px;
+}
 
-    #camposExtra p {
-        font-size: 13px;
-        color: #333;
-        margin: 3px 0;
-    }
+/* Imagen centrada y proporcional */
+.card-objeto img {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid #0b9c23;
+  margin: 10px 0 20px;
+  object-fit: cover;
+}
 
-    /* Para campos personalizados dentro de la tarjeta */
-    .campo_personalizado {
-        border-left: 4px solid #0b9c23;
-        padding-left: 10px;
-        margin: 10px 0;
-    }
+/* Texto descriptivo */
+.card-objeto p {
+  font-size: 14px;
+  color: #000;
+  margin: 5px 0;
+}
 
-    /* Responsive */
-    @media (max-width: 480px) {
-        .card-objeto {
-            padding: 20px;
-        }
+/* Campos extra dinámicos */
+#camposExtra p {
+  font-size: 13px;
+  color: #333;
+  margin: 3px 0;
+}
 
-        .card-objeto h1 {
-            font-size: 1.5rem;
-        }
+/* Campos personalizados */
+.campo_personalizado {
+  border-left: 4px solid #0b9c23;
+  padding-left: 10px;
+  margin: 10px 0;
+}
 
-        .card-objeto img {
-            max-width: 200px;
-        }
-    }
+/* Botones dentro de la tarjeta si los agregas */
+.card-objeto .card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.card-objeto .card-actions button {
+  background: #0b9c23;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.card-objeto .card-actions button:hover {
+  background: #0a7d1d;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card-objeto {
+    padding: 20px;
+  }
+
+  .card-objeto h1 {
+    font-size: 1.5rem;
+  }
+
+  .card-objeto img {
+    max-width: 200px;
+  }
+}

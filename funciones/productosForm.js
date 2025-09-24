@@ -1,5 +1,7 @@
 import { crearProducto, obtenerProductos, editarProducto, eliminarProducto } from "./productos.js";
 import { obtenerCategorias } from "./categorias.js";
+import jsPDF from "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js";
+
 
 // ===== ELEMENTOS DEL DOM =====
 const modalProducto = document.getElementById("modalProducto");
@@ -231,28 +233,18 @@ function generarQR(obj) {
 
     btnDescargarQR.onclick = () => {
         const canvas = qrContainer.querySelector("canvas");
-        const ctx = canvas.getContext("2d");
+        const imgData = canvas.toDataURL("image/png");
 
-        // Crear una copia con fondo blanco
-        const copyCanvas = document.createElement("canvas");
-        copyCanvas.width = canvas.width;
-        copyCanvas.height = canvas.height;
-        const copyCtx = copyCanvas.getContext("2d");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-        // Fondo blanco
-        copyCtx.fillStyle = "#ffffff";
-        copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
+        // Agregar imagen en PDF
+        doc.addImage(imgData, 'PNG', 20, 20, 170, 170); // ajustar tamaño
 
-        // Copiar el QR encima
-        copyCtx.drawImage(canvas, 0, 0);
-
-        // Descargar
-        const url = copyCanvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${obj.nombre}_QR.png`;
-        a.click();
+        // Descargar PDF
+        doc.save(`${obj.nombre}_QR.pdf`);
     };
+
 
 }
 
