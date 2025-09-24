@@ -1,7 +1,5 @@
 import { crearProducto, obtenerProductos, editarProducto, eliminarProducto } from "./productos.js";
 import { obtenerCategorias } from "./categorias.js";
-import jsPDF from "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js";
-
 
 // ===== ELEMENTOS DEL DOM =====
 const modalProducto = document.getElementById("modalProducto");
@@ -233,31 +231,30 @@ function generarQR(obj) {
 
     btnDescargarQR.onclick = () => {
         const canvas = qrContainer.querySelector("canvas");
-        const tempCanvas = document.createElement("canvas");
-        const size = canvas.width;
-        tempCanvas.width = size;
-        tempCanvas.height = size;
-        const ctx = tempCanvas.getContext("2d");
+        const ctx = canvas.getContext("2d");
 
-        // 1️⃣ Pintar fondo blanco
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, size, size);
+        // Crear una copia con fondo blanco
+        const copyCanvas = document.createElement("canvas");
+        copyCanvas.width = canvas.width;
+        copyCanvas.height = canvas.height;
+        const copyCtx = copyCanvas.getContext("2d");
 
-        // 2️⃣ Dibujar el QR encima
-        ctx.drawImage(canvas, 0, 0, size, size);
+        // Fondo blanco
+        copyCtx.fillStyle = "#ffffff";
+        copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
 
-        // 3️⃣ Convertir a imagen
-        const imgData = tempCanvas.toDataURL("image/png");
+        // Copiar el QR encima
+        copyCtx.drawImage(canvas, 0, 0);
 
-        // 4️⃣ Crear PDF con jsPDF
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        doc.addImage(imgData, 'PNG', 20, 20, 170, 170); // ajustar tamaño
-        doc.save(`${obj.nombre}_QR.pdf`);
+        // Descargar
+        const url = copyCanvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${obj.nombre}_QR.png`;
+        a.click();
     };
-}
 
+}
 
 
 // ===== INICIALIZAR =====
