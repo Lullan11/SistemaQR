@@ -209,13 +209,18 @@ window.addEventListener("click", (e) => { if (e.target === modalProducto) cerrar
 // ===== MODAL QR =====
 btnCerrarQR.addEventListener("click", () => modalQR.style.display = "none");
 
+// ===== MODAL QR =====
 function generarQR(obj) {
     qrContainer.innerHTML = "";
-    const urlObjeto = `https://lullan11.github.io/SistemaQR/objeto.html?id=${obj.id}`;
+    infoQR.innerHTML = ""; // Limpiar antes
 
+    // Mostrar toda la info en el modal
     infoQR.innerHTML = `<br>`;
 
     modalQR.style.display = "block";
+
+    // URL pública de GitHub Pages con id
+    const urlObjeto = `https://lullan11.github.io/SistemaQR/objeto.html?id=${obj.id}`;
 
     const qr = new QRCode(qrContainer, {
         text: urlObjeto,
@@ -226,13 +231,31 @@ function generarQR(obj) {
 
     btnDescargarQR.onclick = () => {
         const canvas = qrContainer.querySelector("canvas");
-        const url = canvas.toDataURL("image/png");
+        const ctx = canvas.getContext("2d");
+
+        // Crear una copia con fondo blanco
+        const copyCanvas = document.createElement("canvas");
+        copyCanvas.width = canvas.width;
+        copyCanvas.height = canvas.height;
+        const copyCtx = copyCanvas.getContext("2d");
+
+        // Fondo blanco
+        copyCtx.fillStyle = "#ffffff";
+        copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
+
+        // Copiar el QR encima
+        copyCtx.drawImage(canvas, 0, 0);
+
+        // Descargar
+        const url = copyCanvas.toDataURL("image/png");
         const a = document.createElement("a");
         a.href = url;
         a.download = `${obj.nombre}_QR.png`;
         a.click();
     };
+
 }
+
 
 // ===== INICIALIZAR =====
 document.addEventListener("DOMContentLoaded", async () => {
