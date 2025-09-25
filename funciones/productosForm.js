@@ -27,6 +27,7 @@ const btnDescargarQR = document.getElementById("descargarQR");
 
 let editandoProductoId = null;
 let productosCache = [];
+let categoriasCache = [];
 
 // ===== FUNCIONES =====
 function cerrarModal() {
@@ -38,23 +39,44 @@ function cerrarModal() {
 
 async function cargarCategoriasEnSelect() {
     try {
-        const categorias = await obtenerCategorias();
+        categoriasCache = await obtenerCategorias();
+        
+        // Limpiar y cargar select de categorías (para formulario)
         selectCategoria.innerHTML = '<option value="">Seleccione una categoría</option>';
-        selectFiltrarCategoria.innerHTML = '<option value="">Todas las categorías</option>';
-        categorias.forEach(cat => {
-            const option1 = document.createElement("option");
-            option1.value = cat.id;
-            option1.textContent = cat.nombre;
-            selectCategoria.appendChild(option1);
-
-            const option2 = document.createElement("option");
-            option2.value = cat.id;
-            option2.textContent = cat.nombre;
-            selectFiltrarCategoria.appendChild(option2);
+        categoriasCache.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat.id;
+            option.textContent = cat.nombre;
+            selectCategoria.appendChild(option);
         });
+
+        // Limpiar y cargar select de filtro (manteniendo "Sin categoría")
+        const valorSeleccionado = selectFiltrarCategoria.value; // Guardar selección actual
+        selectFiltrarCategoria.innerHTML = `
+            <option value="">Todas las categorías</option>
+            <option value="__sinCategoria__">Sin categoría</option>
+        `;
+        
+        categoriasCache.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat.id;
+            option.textContent = cat.nombre;
+            selectFiltrarCategoria.appendChild(option);
+        });
+
+        // Restaurar selección anterior si existe
+        if (valorSeleccionado && selectFiltrarCategoria.querySelector(`option[value="${valorSeleccionado}"]`)) {
+            selectFiltrarCategoria.value = valorSeleccionado;
+        }
     } catch (err) {
         console.error("❌ Error cargando categorías:", err);
     }
+}
+
+// Función para verificar si una categoría existe
+function categoriaExiste(categoriaId) {
+    if (!categoriaId) return false;
+    return categoriasCache.some(cat => cat.id === categoriaId);
 }
 
 // ===== CAMPOS ADICIONALES =====
@@ -102,11 +124,12 @@ formProducto.addEventListener("submit", async (e) => {
             await editarProducto(editandoProductoId, producto, archivo);
             alert("✏️ Producto actualizado");
         } else {
-            const nuevoProducto = await crearProducto(producto, archivo);
-            productosCache.unshift(nuevoProducto);
+            await crearProducto(producto, archivo);
             alert("✅ Producto creado");
         }
-        mostrarProductos(productosCache);
+        // Recargar productos y aplicar el filtro actual
+        await cargarYMostrarProductos();
+        filtrarProductos(); // ← ESTA ES LA CLAVE: aplicar el filtro actual después de guardar
         cerrarModal();
     } catch (err) {
         console.error("❌ Error guardando producto:", err);
@@ -117,10 +140,17 @@ formProducto.addEventListener("submit", async (e) => {
 // ===== MOSTRAR PRODUCTOS =====
 async function mostrarProductos(lista = []) {
     listaProductos.innerHTML = "";
-    const categorias = await obtenerCategorias();
+    
+    // Asegurarnos de que las categorías estén cargadas
+    if (categoriasCache.length === 0) {
+        await cargarCategoriasEnSelect();
+    }
 
     lista.forEach(prod => {
-        const categoria = categorias.find(cat => cat.id === prod.categoriaId);
+        // Verificar si la categoría del producto aún existe
+        const categoriaValida = categoriaExiste(prod.categoriaId);
+        const categoria = categoriaValida ? categoriasCache.find(cat => cat.id === prod.categoriaId) : null;
+        
         const card = document.createElement("div");
         card.classList.add("card");
         card.innerHTML = `
@@ -149,7 +179,13 @@ async function mostrarProductos(lista = []) {
             document.getElementById("zonaProducto").value = prod.zona;
 
             await cargarCategoriasEnSelect();
-            selectCategoria.value = prod.categoriaId;
+            
+            // Solo establecer la categoría si aún existe
+            if (categoriaExiste(prod.categoriaId)) {
+                selectCategoria.value = prod.categoriaId;
+            } else {
+                selectCategoria.value = ""; // Sin categoría si fue eliminada
+            }
 
             contenedorCampos.innerHTML = "";
             prod.camposExtra?.forEach(c => {
@@ -167,11 +203,14 @@ async function mostrarProductos(lista = []) {
             modalProducto.style.display = "block";
         });
 
-        // Eliminar
+        // Eliminar - CORREGIDO: aplicar filtro después de eliminar
         card.querySelector(".eliminar").addEventListener("click", async () => {
             if (confirm("¿Eliminar este producto?")) {
                 await eliminarProducto(prod.id);
-                await cargarYMostrarProductos();
+                // Recargar productos y mantener el filtro actual
+                productosCache = await obtenerProductos();
+                productosCache.sort((a, b) => b.id - a.id);
+                filtrarProductos(); // ← ESTA ES LA CLAVE: aplicar el filtro actual
             }
         });
 
@@ -212,14 +251,9 @@ btnCerrarQR.addEventListener("click", () => modalQR.style.display = "none");
 // ===== MODAL QR =====
 function generarQR(obj) {
     qrContainer.innerHTML = "";
-    infoQR.innerHTML = ""; // Limpiar antes
-
-    // Mostrar toda la info en el modal
-    infoQR.innerHTML = `<br>`;
-
+    infoQR.innerHTML = "<br>";
     modalQR.style.display = "block";
 
-    // URL pública de GitHub Pages con id
     const urlObjeto = `https://lullan11.github.io/SistemaQR/objeto.html?id=${obj.id}`;
 
     const qr = new QRCode(qrContainer, {
@@ -231,9 +265,6 @@ function generarQR(obj) {
 
     btnDescargarQR.onclick = () => {
         const canvas = qrContainer.querySelector("canvas");
-        const ctx = canvas.getContext("2d");
-
-        // Crear una copia con fondo blanco
         const copyCanvas = document.createElement("canvas");
         copyCanvas.width = canvas.width;
         copyCanvas.height = canvas.height;
@@ -243,19 +274,16 @@ function generarQR(obj) {
         copyCtx.fillStyle = "#ffffff";
         copyCtx.fillRect(0, 0, copyCanvas.width, copyCanvas.height);
 
-        // Copiar el QR encima
+        // Copiar QR encima
         copyCtx.drawImage(canvas, 0, 0);
 
-        // Descargar
         const url = copyCanvas.toDataURL("image/png");
         const a = document.createElement("a");
         a.href = url;
         a.download = `${obj.nombre}_QR.png`;
         a.click();
     };
-
 }
-
 
 // ===== INICIALIZAR =====
 document.addEventListener("DOMContentLoaded", async () => {
@@ -266,7 +294,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function cargarYMostrarProductos() {
     productosCache = await obtenerProductos();
     productosCache.sort((a, b) => b.id - a.id);
-    mostrarProductos(productosCache);
+    // No llamar a mostrarProductos directamente, usar filtrarProductos para aplicar filtros actuales
+    filtrarProductos();
 }
 
 function filtrarProductos() {
@@ -279,7 +308,18 @@ function filtrarProductos() {
         const matchNombre = prod.nombre.toLowerCase().includes(nombre);
         const matchLugar = prod.lugar.toLowerCase().includes(lugar);
         const matchZona = prod.zona.toLowerCase().includes(zona);
-        const matchCategoria = categoriaId === "" || prod.categoriaId === categoriaId;
+
+        let matchCategoria = true;
+        
+        if (categoriaId === "__sinCategoria__") {
+            // Mostrar productos que NO tienen categoría válida
+            matchCategoria = !categoriaExiste(prod.categoriaId);
+        } else if (categoriaId !== "") {
+            // Mostrar productos de una categoría específica
+            matchCategoria = categoriaExiste(prod.categoriaId) && prod.categoriaId === categoriaId;
+        }
+        // Si categoriaId es "", mostrar todos (matchCategoria sigue siendo true)
+
         return matchNombre && matchLugar && matchZona && matchCategoria;
     });
 

@@ -359,6 +359,41 @@ body {
   background: #e60000;
 }
 
+/* Ajustar campos adicionales para pantallas pequeñas */
+.campo-adicional {
+  display: flex;
+  flex-wrap: wrap;   /* ✅ Permite que los elementos salten de línea */
+  align-items: center;
+  gap: 10px;
+}
+
+.campo-adicional input[type="text"] {
+  flex: 1 1 100%;    /* ✅ En pantallas pequeñas ocuparán el 100% */
+  min-width: 120px;
+}
+
+/* Botón eliminar campo */
+.campo-adicional .btn-eliminar-campo {
+  flex: 0 0 auto;    /* ✅ Mantiene su tamaño y no se estira */
+}
+
+/* Mejoras responsivas */
+@media (max-width: 600px) {
+  .campo-adicional {
+    flex-direction: column;   /* ✅ Los inputs uno debajo del otro */
+    align-items: stretch;
+  }
+
+  .campo-adicional input[type="text"] {
+    width: 100%;
+  }
+
+  .campo-adicional .btn-eliminar-campo {
+    align-self: flex-end;     /* Botón alineado a la derecha */
+  }
+}
+
+
 
 .btn-eliminar-campo {
   background: #ff4757;
